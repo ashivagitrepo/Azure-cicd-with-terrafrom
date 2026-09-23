@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DevOps Task Manager</title>
+</head>
+<body>
+    <h1>DevOps Task Manager</h1>
+    <h2>Environment: DEV</h2>
+
+    <form method="POST" action="/add">
+        <input type="text" name="task" placeholder="Enter a task" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <h3>Tasks</h3>
+
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task[1] }}
+                {% if task[2] %}
+                    - Completed
+                {% else %}
+                    - Pending
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
