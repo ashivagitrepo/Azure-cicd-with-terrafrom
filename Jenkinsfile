@@ -12,9 +12,20 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
+                    echo "Checking Python..."
                     python3 --version
-                    pip3 --version
-                    pip3 install -r requirements.txt
+
+                    echo "Creating Python virtual environment..."
+                    python3 -m venv venv
+
+                    echo "Checking virtual environment..."
+                    ./venv/bin/python --version
+
+                    echo "Upgrading pip..."
+                    ./venv/bin/pip install --upgrade pip
+
+                    echo "Installing project dependencies..."
+                    ./venv/bin/pip install -r requirements.txt
                 '''
             }
         }
@@ -35,6 +46,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''
+                    echo "Building Docker image..."
                     docker build -t task-manager:latest .
                 '''
             }
