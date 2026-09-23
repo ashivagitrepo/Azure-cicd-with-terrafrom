@@ -55,5 +55,27 @@ pipeline {
                 '''
             }
         }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+                        docker tag task-manager:latest dockerymal/taskmanager:latest
+
+                        docker push dockerymal/taskmanager:latest
+
+                        docker logout
+                    '''
+                }
+            }
+        }
     }
 }
