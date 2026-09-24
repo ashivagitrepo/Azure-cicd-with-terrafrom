@@ -1,0 +1,33 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- script: |
+    sudo apt-get update
+    sudo apt-get install -y wget unzip
+
+    wget -q https://releases.hashicorp.com/terraform/1.13.3/terraform_1.13.3_linux_amd64.zip
+    unzip -o terraform_1.13.3_linux_amd64.zip
+    sudo mv terraform /usr/local/bin/
+
+    terraform --version
+  displayName: 'Install Terraform'
+
+- task: AzureCLI@2
+  displayName: 'Terraform Init Validate Plan'
+  inputs:
+    azureSubscription: 'cicd_pipeline'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az account show
+
+      terraform init
+
+      terraform validate
+
+      terraform plan
