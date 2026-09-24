@@ -5,24 +5,26 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.11'
 
 - script: |
-    python --version
-    pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
+    sudo apt-get update
+    sudo apt-get install -y wget unzip
+
+    wget -q https://releases.hashicorp.com/terraform/1.13.3/terraform_1.13.3_linux_amd64.zip
+    unzip -o terraform_1.13.3_linux_amd64.zip
+    sudo mv terraform /usr/local/bin/
+
+    terraform --version
+  displayName: 'Install Terraform'
 
 - script: |
-    python -m compileall .
-  displayName: 'Check Python code'
+    terraform init
+  displayName: 'Terraform Init'
 
 - script: |
-    if [ -f test_app.py ]; then
-      pytest
-    else
-      echo "No test_app.py found - skipping tests"
-    fi
-  displayName: 'Run tests'
+    terraform validate
+  displayName: 'Terraform Validate'
+
+- script: |
+    terraform plan
+  displayName: 'Terraform Plan'
