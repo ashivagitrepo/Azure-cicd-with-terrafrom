@@ -4,27 +4,170 @@
     <title>DevOps Task Manager</title>
 </head>
 <body>
+
     <h1>DevOps Task Manager</h1>
     <h2>Environment: DEV</h2>
 
+    <!-- Add Task -->
+    <h3>Add New Task</h3>
+
     <form method="POST" action="/add">
-        <input type="text" name="task" placeholder="Enter a task" required>
+
+        <input
+            type="text"
+            name="task"
+            placeholder="Enter a task"
+            required
+        >
+
+        <select name="priority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+        </select>
+
         <button type="submit">Add Task</button>
+
     </form>
 
+    <!-- Search and Filters -->
+    <h3>Search & Filter Tasks</h3>
+
+    <form method="GET" action="/">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search task"
+            value="{{ search }}"
+        >
+
+        <select name="status">
+
+            <option value="">All Status</option>
+
+            <option value="To Do"
+                {% if selected_status == "To Do" %}selected{% endif %}>
+                To Do
+            </option>
+
+            <option value="In Progress"
+                {% if selected_status == "In Progress" %}selected{% endif %}>
+                In Progress
+            </option>
+
+            <option value="Completed"
+                {% if selected_status == "Completed" %}selected{% endif %}>
+                Completed
+            </option>
+
+        </select>
+
+        <select name="priority">
+
+            <option value="">All Priorities</option>
+
+            <option value="Low"
+                {% if selected_priority == "Low" %}selected{% endif %}>
+                Low
+            </option>
+
+            <option value="Medium"
+                {% if selected_priority == "Medium" %}selected{% endif %}>
+                Medium
+            </option>
+
+            <option value="High"
+                {% if selected_priority == "High" %}selected{% endif %}>
+                High
+            </option>
+
+        </select>
+
+        <button type="submit">Search / Filter</button>
+
+        <a href="/">Clear Filters</a>
+
+    </form>
+
+    <!-- Task List -->
     <h3>Tasks</h3>
 
     <ul>
+
         {% for task in tasks %}
+
             <li>
-                {{ task[1] }}
-                {% if task[2] %}
-                    - Completed
-                {% else %}
-                    - Pending
-                {% endif %}
+
+                <strong>{{ task[1] }}</strong>
+
+                <br>
+
+                Status:
+                <strong>{{ task[3] }}</strong>
+
+                <br>
+
+                Priority:
+                <strong>{{ task[4] }}</strong>
+
+                <br><br>
+
+                <form method="POST" action="/update/{{ task[0] }}">
+
+                    <select name="status">
+
+                        <option value="To Do"
+                            {% if task[3] == "To Do" %}selected{% endif %}>
+                            To Do
+                        </option>
+
+                        <option value="In Progress"
+                            {% if task[3] == "In Progress" %}selected{% endif %}>
+                            In Progress
+                        </option>
+
+                        <option value="Completed"
+                            {% if task[3] == "Completed" %}selected{% endif %}>
+                            Completed
+                        </option>
+
+                    </select>
+
+                    <select name="priority">
+
+                        <option value="Low"
+                            {% if task[4] == "Low" %}selected{% endif %}>
+                            Low
+                        </option>
+
+                        <option value="Medium"
+                            {% if task[4] == "Medium" %}selected{% endif %}>
+                            Medium
+                        </option>
+
+                        <option value="High"
+                            {% if task[4] == "High" %}selected{% endif %}>
+                            High
+                        </option>
+
+                    </select>
+
+                    <button type="submit">Update</button>
+
+                </form>
+
             </li>
+
+            <br>
+
+        {% else %}
+
+            <li>No tasks found.</li>
+
         {% endfor %}
+
     </ul>
+
 </body>
 </html>
